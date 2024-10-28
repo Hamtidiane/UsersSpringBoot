@@ -1,5 +1,7 @@
 package edu.campus.numerique.client;
 
+import org.springframework.web.client.RestTemplate;
+
 import java.time.LocalDate;
 
 public class Client {

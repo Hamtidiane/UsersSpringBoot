@@ -4,16 +4,18 @@ import edu.campus.numerique.client.Client;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.*;
 
 @RestController
-@RequestMapping("/clients")
+@RequestMapping("api/clients")
 public class ClientController {
 
     // Liste de clients définie en dur
     private static List<Client> clients = new ArrayList<>();//Arrays.asList(
+    private RestTemplate restTemplate;
 
 
     static {
@@ -40,10 +42,23 @@ public class ClientController {
 
     // Méthode pour ajouter un nouveau client
     @PostMapping
-    public ResponseEntity<Client> addClient(@RequestBody Client newClient) {
-        newClient.setId(clients.size() + 1); // Génère un nouvel ID
-        clients.add(newClient);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newClient);
+    public ResponseEntity<String> addClient(@RequestBody Client newClient) {
+        this.restTemplate = new RestTemplate();
+        // Appel de l'API de vérification du numéro de permis
+        String url = "http://localhost:8081/licenses/" + newClient.getNumeroPermis();
+
+        // Utiliser l'instance de RestTemplate déjà définie
+        ResponseEntity<Boolean> response = restTemplate.getForEntity(url, Boolean.class);
+
+        if (response.getBody() != null && response.getBody()) {
+            // Le permis est valide, on ajoute le client
+            newClient.setId(clients.size() + 1);
+            clients.add(newClient);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Client ajouté avec succès");
+        } else {
+            // Le permis est invalide, on retourne une erreur
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Numéro de permis invalide");
+        }
     }
 
     // Méthode pour mettre à jour un client existant
