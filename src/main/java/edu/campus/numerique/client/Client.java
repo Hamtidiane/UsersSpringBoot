@@ -1,10 +1,16 @@
 package edu.campus.numerique.client;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
-
+@Entity
 public class Client {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id ;
     private String nom ;
     private String prenom ;
@@ -20,6 +26,12 @@ public class Client {
         this.dateNaissance = dateNaissance;
         this.numeroPermis = numeroPermis;
     }
+
+    public Client() {
+
+    }
+
+
     public int getId() {
         return id;
     }

@@ -11,3 +11,5 @@ public class ClientApplication {
     }
 
 }
+
+//Les repositories sont des interfaces qui gèrent les opérations CRUD pour les entités. Créez un repository pour l’entité Client
